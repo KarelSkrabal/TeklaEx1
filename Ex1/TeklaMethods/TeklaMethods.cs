@@ -9,6 +9,7 @@ namespace Ex1.TeklaMethods
     internal class TeklaMethods
     {
         //test
+        //test
         public TeklaMethods()
         {
 
