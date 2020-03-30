@@ -486,7 +486,9 @@ namespace Ex1
 
         private void lswDrawings_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _drawing = (Drawing)(sender as ListView).SelectedItems[0].Tag;
+            ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
+            if (selectedList.Count != 0)
+                _drawing = (Drawing)selectedList[0].Tag;
         }
 
         private void btnSetActiveDrawing_Click(object sender, EventArgs e)
