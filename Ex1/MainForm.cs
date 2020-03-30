@@ -18,11 +18,11 @@ using Tekla.Structures.Drawing;
 
 namespace Ex1
 {
-    public partial class Form1 : /*Form */ApplicationFormBase
+    public partial class MainForm : /*Form */ApplicationFormBase
     {
         private Model _model;
         private ModelInfo _modelInfo;
-        private StringBuilder _modelInfoRawString;
+        //private StringBuilder _modelInfoRawString;
         private string _padFootingsSize = "1500"; //default value
         private static CreatedModelEntity _createdModels;
         private MaterialItem _material;
@@ -54,7 +54,7 @@ namespace Ex1
 
         public static void AddPoint(Point p) => _createdModels.points.Add(p);
 
-        public Form1()
+        public MainForm()
         {
             base.InitializeForm();
             InitializeComponent();
@@ -66,7 +66,7 @@ namespace Ex1
             if (!_model.GetConnectionStatus())
                 throw new Exception("Tekla isn't connected!");
 
-            _modelInfoRawString = new StringBuilder();
+            //_modelInfoRawString = new StringBuilder();
             _modelInfo = _model.GetInfo();
             _material = new MaterialItem();
             _drawingHandler = new DrawingHandler();
@@ -149,8 +149,8 @@ namespace Ex1
         private void Form1_Load(object sender, EventArgs e)
         {
             Initialize();
-            GetModelInfo();
-            lbModelInfo.Text = _modelInfoRawString.ToString();
+            //GetModelInfo();
+            //lbModelInfo.Text = _modelInfoRawString.ToString();
             GetPadFootingPoints();
             btnCreateRebars.Enabled = false;
             GetDrawings();
@@ -173,14 +173,14 @@ namespace Ex1
             }
         }
 
-        private void GetModelInfo()
-        {
-            Type t = _modelInfo.GetType();
-            foreach (var item in t.GetProperties())
-            {
-                _modelInfoRawString.AppendLine(item.Name + " : " + item.GetValue(_modelInfo).ToString());
-            }
-        }
+        //private void GetModelInfo()
+        //{
+        //    Type t = _modelInfo.GetType();
+        //    foreach (var item in t.GetProperties())
+        //    {
+        //        _modelInfoRawString.AppendLine(item.Name + " : " + item.GetValue(_modelInfo).ToString());
+        //    }
+        //}
 
         private bool InsertModel(Point point)
         {

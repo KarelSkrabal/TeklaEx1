@@ -1,5 +1,4 @@
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.csprojAssemblyReference.cache
-C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.Form1.resources
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.MaterialSelectionForm.resources
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.Properties.Resources.resources
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.csproj.GenerateResource.cache
@@ -12,3 +11,4 @@ C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\bin\Debug\Syste
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.csproj.CopyComplete
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.exe
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.pdb
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.MainForm.resources
