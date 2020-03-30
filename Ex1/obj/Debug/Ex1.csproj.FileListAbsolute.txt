@@ -1,0 +1,8 @@
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\bin\Debug\Ex1.exe.config
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\bin\Debug\Ex1.exe
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\bin\Debug\Ex1.pdb
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\obj\Debug\Ex1.Properties.Resources.resources
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\obj\Debug\Ex1.csproj.GenerateResource.cache
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\obj\Debug\Ex1.csproj.CoreCompileInputs.cache
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\obj\Debug\Ex1.exe
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\Ex1\obj\Debug\Ex1.pdb
