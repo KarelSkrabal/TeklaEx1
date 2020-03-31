@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Windows.Forms;
-
 using Tekla.Structures;
 using Tekla.Structures.Catalogs;
 using Tekla.Structures.Dialog;
-using Tekla.Structures.Dialog.UIControls;
 using Tekla.Structures.Model;
 using Tekla.Structures.Geometry3d;
-using TSD = Tekla.Structures.Datatype;
 using Point = Tekla.Structures.Geometry3d.Point;
 using System.Text;
 using System.ComponentModel;
@@ -18,11 +14,10 @@ using Tekla.Structures.Drawing;
 
 namespace Ex1
 {
-    public partial class MainForm : /*Form */ApplicationFormBase
+    public partial class MainForm : ApplicationFormBase
     {
         private Model _model;
         private ModelInfo _modelInfo;
-        //private StringBuilder _modelInfoRawString;
         private string _padFootingsSize = "1500"; //default value
         private static CreatedModelEntity _createdModels;
         private MaterialItem _material;
@@ -47,19 +42,18 @@ namespace Ex1
             new PadFootingPointController(p => true, p => DoNothing())
         };
 
-        private static void DoNothing()
-        {
-            //default case that just do nothing!
-        }
-
-        public static void AddPoint(Point p) => _createdModels.points.Add(p);
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MainForm()
         {
             base.InitializeForm();
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Initialize fields
+        /// </summary>
         private void Initialize()
         {
             _model = new Model();
@@ -75,7 +69,7 @@ namespace Ex1
             _bwCreatePadFootings.ProgressChanged += _bwCreatePadFootings_ProgressChanged;
             _bwCreatePadFootings.RunWorkerCompleted += _bwCreatePadFootings_RunWorkerCompleted;
             _bwCreatePadFootings.WorkerReportsProgress = true;
-            _createdModels = new CreatedModelEntity();
+            _createdModels = CreatedModelEntity.Instance;
             _bwCreateRebars = new BackgroundWorker();
             _bwCreateRebars.DoWork += _bwCreateRebars_DoWork;
             _bwCreateRebars.ProgressChanged += _bwCreateRebars_ProgressChanged;
@@ -83,242 +77,13 @@ namespace Ex1
             _bwCreateRebars.WorkerReportsProgress = true;
         }
 
-        private void _bwCreateRebars_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            btnCreateFootings.Enabled = true;
-            btnCreateRebars.Enabled = true;
-        }
-
-        private void _bwCreateRebars_ProgressChanged(object sender, ProgressChangedEventArgs e) => lbResult.Text = "Progress : " + e.ProgressPercentage.ToString() + "% completed";
-
-        private void _bwCreateRebars_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker backgroundWorker = (BackgroundWorker)sender;
-            double progressStep = 0;
-            int counter = 0;
-
-            ModelObjectEnumerator padFotings = _model.GetModelObjectSelector().GetAllObjectsWithType(Tekla.Structures.Model.ModelObject.ModelObjectEnum.BEAM);
-
-            //calculate progress step for the progress reporting on the form
-            if (padFotings != null)
-                progressStep = (double)1 / padFotings.GetSize();
-
-            foreach (Beam padFooting in padFotings)
-            {
-                CreateRebar(padFooting);
-                counter++;
-                backgroundWorker.ReportProgress((int)Math.Round(counter * progressStep * 100, MidpointRounding.AwayFromZero));
-            }
-            //e.Result = ret;
-        }
-
-        private void GetPadFootingsSize() => _padFootingsSize = this.txtPadFootingSize.Text;
-
-        private void _bwCreatePadFootings_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            //lbResult.Text = "Created : " + e.Result.ToString() + " padfootings.";
-            btnCreateFootings.Enabled = true;
-            btnCreateRebars.Enabled = true;
-        }
-
-        private void _bwCreatePadFootings_ProgressChanged(object sender, ProgressChangedEventArgs e) => lbResult.Text = "Progress : " + e.ProgressPercentage.ToString() + "% completed";
-
-        private void _bwCreatePadFootings_DoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker backgroundWorker = (BackgroundWorker)sender;
-            double progressStep = 0;
-            int counter = 0;
-
-            //calculate progress step for the progress reporting on the form
-            if (_createdModels.points/*_points*/ != null && _createdModels.points.Count > 0)
-                progressStep = (double)1 / _createdModels.points.Count;
-
-            foreach (var point in _createdModels.points)
-            {
-                //TODO-change this, consider bool return value if it's usefull
-                if (InsertModel(point))
-                {
-                    CreateConnection(counter);
-                    counter++;
-                }
-                backgroundWorker.ReportProgress((int)Math.Round(counter * progressStep * 100, MidpointRounding.AwayFromZero));
-            }
-            //e.Result = ret;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
+        #region FormEvents
+        private void MainForm_Load(object sender, EventArgs e)
         {
             Initialize();
-            //GetModelInfo();
-            //lbModelInfo.Text = _modelInfoRawString.ToString();
             GetPadFootingPoints();
             btnCreateRebars.Enabled = false;
-            GetDrawings();
-        }
-
-        private void GetDrawings()
-        {
-            DrawingEnumerator drawingEnumerator = _drawingHandler.GetDrawings();
-            ListViewItem item;
-            while (drawingEnumerator.MoveNext())
-            {
-                item = new ListViewItem()
-                {
-                    Tag = drawingEnumerator.Current,
-                    Text = drawingEnumerator.Current.Name,
-                    ToolTipText = drawingEnumerator.Current.Title2
-                };
-                lswDrawings.Items.Add(item);
-                item = null;
-            }
-        }
-
-        //private void GetModelInfo()
-        //{
-        //    Type t = _modelInfo.GetType();
-        //    foreach (var item in t.GetProperties())
-        //    {
-        //        _modelInfoRawString.AppendLine(item.Name + " : " + item.GetValue(_modelInfo).ToString());
-        //    }
-        //}
-
-        private bool InsertModel(Point point)
-        {
-            //_modelInfoRawString = null;
-            bool ret = CreatePadFootings(point) && CreateColumnOnPadFootings(point);
-            //testing
-            CreateRebar(_createdModels.padFootings.FirstOrDefault());
-            return ret;
-        }
-
-        private bool CreatePadFootings(Point point)
-        {
-            Beam padFooting = new Beam();
-            padFooting.Name = "FOOTING";
-            padFooting.Profile.ProfileString = _padFootingsSize.GetPadFootingSizeString();
-            padFooting.Material.MaterialString = "K30-2";
-            padFooting.Class = "8";
-            padFooting.StartPoint = point;
-            padFooting.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 500 };
-            padFooting.Position.Rotation = Position.RotationEnum.FRONT;
-            padFooting.Position.Plane = Position.PlaneEnum.MIDDLE;
-            padFooting.Position.Depth = Position.DepthEnum.MIDDLE;
-            if (padFooting.Insert() && _model.CommitChanges())
-            {
-                _createdModels.padFootings.Add(padFooting);
-                return true;
-            }
-            return false;
-        }
-
-        private bool CreateColumnOnPadFootings(Point point)
-        {
-            Beam column = new Beam();
-            column.Name = "COLUMN";
-            //column.Profile.ProfileString = "400*400";
-            column.Profile.ProfileString = ColumnsProfileTextBox.Text;
-            column.Material.MaterialString = "Concrete_Undefined";
-            column.Material.MaterialString = _material.MaterialName;
-            column.Class = "13";
-            column.StartPoint = point;
-            column.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 5000 };
-            column.Position.Rotation = Position.RotationEnum.FRONT;
-            column.Position.Plane = Position.PlaneEnum.MIDDLE;
-            column.Position.Depth = Position.DepthEnum.MIDDLE;
-            if (column.Insert() && _model.CommitChanges())
-            {
-                _createdModels.columns.Add(column);
-                return true;
-            }
-            return false;
-        }
-
-        private bool CreateConnection(int actualPosition)
-        {
-            Tekla.Structures.Model.Connection connection = new Tekla.Structures.Model.Connection();
-            connection.Name = "Stiffened Base Plate";
-            connection.Number = 1014;
-            connection.PositionType = PositionTypeEnum.COLLISION_PLANE;
-            connection.SetAttribute("cut1", 1);
-            connection.SetAttribute("cut2", 1);
-            connection.LoadAttributesFromFile("standard");
-            connection.UpVector = new Vector(0, 0, 1000);
-            connection.SetPrimaryObject(_createdModels.columns.ElementAt(actualPosition));
-            connection.SetSecondaryObject(_createdModels.padFootings.ElementAt(actualPosition));
-            if (connection.Insert() && _model.CommitChanges())
-            {
-                _createdModels.connections.Add(connection);
-                return true;
-            }
-            return false;
-        }
-
-        private void CreateRebar(Beam beam)
-        {
-            double MinimumX = beam.GetSolid().MinimumPoint.X;
-            double MinimumY = beam.GetSolid().MinimumPoint.Y;
-            double MinimumZ = beam.GetSolid().MinimumPoint.Z;
-            double MaximumX = beam.GetSolid().MaximumPoint.X;
-            double MaximumY = beam.GetSolid().MaximumPoint.Y;
-            double MaximumZ = beam.GetSolid().MaximumPoint.Z;
-
-            Tekla.Structures.Model.Polygon polygon = new Tekla.Structures.Model.Polygon();
-            polygon.Points.Add(new Point(MinimumX, MaximumY, MinimumZ));
-            polygon.Points.Add(new Point(MinimumX, MinimumY, MinimumZ));
-            polygon.Points.Add(new Point(MinimumX, MinimumY, MaximumZ));
-            polygon.Points.Add(new Point(MinimumX, MaximumY, MaximumZ));
-
-            Tekla.Structures.Model.Polygon polygon2 = new Tekla.Structures.Model.Polygon();
-            polygon2.Points.Add(new Point(MaximumX, MaximumY, MinimumZ));
-            polygon2.Points.Add(new Point(MaximumX, MinimumY, MinimumZ));
-            polygon2.Points.Add(new Point(MaximumX, MinimumY, MaximumZ));
-            polygon2.Points.Add(new Point(MaximumX, MaximumY, MaximumZ));
-
-            RebarGroup rebarGroup = new RebarGroup();
-            rebarGroup.Polygons.Add(polygon);
-            rebarGroup.Polygons.Add(polygon2);
-            rebarGroup.Class = 3;
-            rebarGroup.Name = "FootingRebar";
-            rebarGroup.Father = beam;
-            //rebarGroup.Grade = "Undefined";
-            rebarGroup.Grade = GradeTextBox.Text;
-            //rebarGroup.Size = "12";
-            rebarGroup.Size = SizeTextBox.Text;
-            //rebarGroup.RadiusValues.Add(40.0);
-            SetRadius(ref rebarGroup);
-            rebarGroup.SpacingType = BaseRebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_TARGET_SPACE;
-            rebarGroup.Spacings.Add(100.0);
-            rebarGroup.ExcludeType = RebarGroup.ExcludeTypeEnum.EXCLUDE_TYPE_BOTH;
-            rebarGroup.NumberingSeries.StartNumber = 0;
-            rebarGroup.NumberingSeries.Prefix = "Group";
-            rebarGroup.OnPlaneOffsets.Add(25.0);
-            rebarGroup.FromPlaneOffset = 40;
-            rebarGroup.Insert();
-
-            rebarGroup.Name = "Modified Group 1";
-            rebarGroup.Modify();
-        }
-
-        private void SetRadius(ref RebarGroup rebarGroup)
-        {
-            string[] radiuses = BendingRadiusTextBox.Text.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var radius in radiuses)
-            {
-                rebarGroup.RadiusValues.Add(Convert.ToDouble(radius));
-            }
-        }
-
-        private void GetPadFootingPoints()
-        {
-            for (int x = 0; x <= X_MAX; x += X_STEP)
-            {
-                for (int y = 0; y <= Y_MAX; y += Y_STEP)
-                {
-                    var point = new Point() { X = x, Y = y, Z = 0 };
-                    var runShortCut = _padFootingPointController.First(p => p._canApply(point));
-                    runShortCut._action(point);
-                }
-            }
+            ShowDrawings();
         }
 
         private void btnCreateFootings_Click(object sender, EventArgs e)
@@ -328,39 +93,6 @@ namespace Ex1
             {
                 _bwCreatePadFootings.RunWorkerAsync();
                 btnCreateFootings.Enabled = false;
-            }
-        }
-
-        private void SetDefaultTextToResultLabel()
-        {
-            lbResult.Text = "Progress : start .. ";
-        }
-
-        public class PadFootingPointController
-        {
-            public Func<Point, bool> _canApply { get; set; }
-            public Action<Point> _action { get; set; }
-
-            public PadFootingPointController(Func<Point, bool> canApply, Action<Point> action)
-            {
-                _canApply = canApply;
-                _action = action;
-            }
-        }
-        //TODO-consider singleton pattern for this object
-        public class CreatedModelEntity
-        {
-            public List<Point> points;
-            public List<Beam> padFootings;
-            public List<Beam> columns;
-            public List<Tekla.Structures.Model.Connection> connections;
-
-            public CreatedModelEntity()
-            {
-                points = new List<Point>();
-                padFootings = new List<Beam>();
-                columns = new List<Beam>();
-                connections = new List<Tekla.Structures.Model.Connection>();
             }
         }
 
@@ -428,6 +160,283 @@ namespace Ex1
                 CreateDrawing(txtDrawingText.Text);
         }
 
+        private void lswDrawings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
+            if (selectedList.Count != 0)
+                _drawing = (Drawing)selectedList[0].Tag;
+        }
+
+        private void btnSetActiveDrawing_Click(object sender, EventArgs e)
+        {
+            _drawingHandler.SetActiveDrawing(_drawing, true);
+        }
+
+        private void _bwCreateRebars_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            btnCreateFootings.Enabled = true;
+            btnCreateRebars.Enabled = true;
+        }
+
+        private void _bwCreateRebars_ProgressChanged(object sender, ProgressChangedEventArgs e) => lbResult.Text = "Progress : " + e.ProgressPercentage.ToString() + "% completed";
+
+        /// <summary>
+        /// DoWork event for btnCreateRebars Click event
+        /// </summary>
+        private void _bwCreateRebars_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker backgroundWorker = (BackgroundWorker)sender;
+            double progressStep = 0;
+            int counter = 0;
+
+            ModelObjectEnumerator padFotings = _model.GetModelObjectSelector().GetAllObjectsWithType(Tekla.Structures.Model.ModelObject.ModelObjectEnum.BEAM);
+
+            //calculate progress step for the progress reporting on the form
+            if (padFotings != null)
+                progressStep = (double)1 / padFotings.GetSize();
+
+            foreach (Beam padFooting in padFotings)
+            {
+                CreateRebar(padFooting);
+                counter++;
+                backgroundWorker.ReportProgress((int)Math.Round(counter * progressStep * 100, MidpointRounding.AwayFromZero));
+            }
+            //e.Result = ret;
+        }
+
+        private void GetPadFootingsSize() => _padFootingsSize = this.txtPadFootingSize.Text;
+
+        private void _bwCreatePadFootings_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            //lbResult.Text = "Created : " + e.Result.ToString() + " padfootings.";
+            btnCreateFootings.Enabled = true;
+            btnCreateRebars.Enabled = true;
+        }
+
+        private void _bwCreatePadFootings_ProgressChanged(object sender, ProgressChangedEventArgs e) => lbResult.Text = "Progress : " + e.ProgressPercentage.ToString() + "% completed";
+
+        /// <summary>
+        /// DoWork event for btnCreateFootings Click event
+        /// </summary>
+        private void _bwCreatePadFootings_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker backgroundWorker = (BackgroundWorker)sender;
+            double progressStep = 0;
+            int counter = 0;
+
+            //calculate progress step for the progress reporting on the form
+            if (_createdModels.points != null && _createdModels.points.Count > 0)
+                progressStep = (double)1 / _createdModels.points.Count;
+
+            foreach (var point in _createdModels.points)
+            {
+                //TODO-change this, consider bool return value if it's usefull
+                if (InsertModel(point))
+                {
+                    CreateConnection(counter);
+                    counter++;
+                }
+                backgroundWorker.ReportProgress((int)Math.Round(counter * progressStep * 100, MidpointRounding.AwayFromZero));
+            }
+            //e.Result = ret;
+        }
+
+        /// <summary>
+        /// Sets some default text to let user know that process's just started
+        /// </summary>
+        private void SetDefaultTextToResultLabel() => lbResult.Text = "Progress : start .. ";
+        #endregion
+
+        #region TeklaMethods
+
+        /// <summary>
+        /// Get & bound drawings to the ListView
+        /// </summary>
+        private void ShowDrawings()
+        {
+            DrawingEnumerator drawingEnumerator = _drawingHandler.GetDrawings();
+            ListViewItem item;
+            while (drawingEnumerator.MoveNext())
+            {
+                item = new ListViewItem()
+                {
+                    Tag = drawingEnumerator.Current,
+                    Text = drawingEnumerator.Current.Name,
+                    ToolTipText = drawingEnumerator.Current.Title2
+                };
+                lswDrawings.Items.Add(item);
+                item = null;
+            }
+        }
+
+        //TODO-refactor this method
+        private bool InsertModel(Point point)
+        {
+            bool ret = CreatePadFootings(point) && CreateColumnOnPadFootings(point);
+            //testing
+            CreateRebar(_createdModels.padFootings.FirstOrDefault());
+            return ret;
+        }
+
+        //TODO-check the next todo noted
+        /// <summary>
+        /// Creates a padfooting model
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private bool CreatePadFootings(Point point)
+        {
+            Beam padFooting = new Beam();
+            padFooting.Name = "FOOTING";
+            padFooting.Profile.ProfileString = _padFootingsSize.GetPadFootingSizeString();
+            padFooting.Material.MaterialString = "K30-2";
+            padFooting.Class = "8";
+            padFooting.StartPoint = point;
+            padFooting.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 500 };
+            padFooting.Position.Rotation = Position.RotationEnum.FRONT;
+            padFooting.Position.Plane = Position.PlaneEnum.MIDDLE;
+            padFooting.Position.Depth = Position.DepthEnum.MIDDLE;
+            if (padFooting.Insert() && _model.CommitChanges())
+            {
+                _createdModels.padFootings.Add(padFooting);
+                return true;
+            }
+            return false;
+        }
+
+        //TODO-check the next todo noted
+        /// <summary>
+        /// Creates a column on padfooting at given point
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        private bool CreateColumnOnPadFootings(Point point)
+        {
+            Beam column = new Beam();
+            column.Name = "COLUMN";
+            //column.Profile.ProfileString = "400*400";
+            column.Profile.ProfileString = ColumnsProfileTextBox.Text;
+            column.Material.MaterialString = "Concrete_Undefined";
+            column.Material.MaterialString = _material.MaterialName;
+            column.Class = "13";
+            column.StartPoint = point;
+            column.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 5000 };
+            column.Position.Rotation = Position.RotationEnum.FRONT;
+            column.Position.Plane = Position.PlaneEnum.MIDDLE;
+            column.Position.Depth = Position.DepthEnum.MIDDLE;
+            if (column.Insert() && _model.CommitChanges())
+            {
+                _createdModels.columns.Add(column);
+                return true;
+            }
+            return false;
+        }
+
+        //TODO-consider inserted parameter, int || Point (as in CreatePadFooting method)
+        /// <summary>
+        /// Creates connection between column & padfooting
+        /// </summary>
+        /// <param name="actualPosition"></param>
+        /// <returns></returns>
+        private bool CreateConnection(int actualPosition)
+        {
+            Tekla.Structures.Model.Connection connection = new Tekla.Structures.Model.Connection();
+            connection.Name = "Stiffened Base Plate";
+            connection.Number = 1014;
+            connection.PositionType = PositionTypeEnum.COLLISION_PLANE;
+            connection.SetAttribute("cut1", 1);
+            connection.SetAttribute("cut2", 1);
+            connection.LoadAttributesFromFile("standard");
+            connection.UpVector = new Vector(0, 0, 1000);
+            connection.SetPrimaryObject(_createdModels.columns.ElementAt(actualPosition));
+            connection.SetSecondaryObject(_createdModels.padFootings.ElementAt(actualPosition));
+            if (connection.Insert() && _model.CommitChanges())
+            {
+                _createdModels.connections.Add(connection);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Creates rebars to a given beam
+        /// </summary>
+        /// <param name="beam"></param>
+        private void CreateRebar(Beam beam)
+        {
+            double MinimumX = beam.GetSolid().MinimumPoint.X;
+            double MinimumY = beam.GetSolid().MinimumPoint.Y;
+            double MinimumZ = beam.GetSolid().MinimumPoint.Z;
+            double MaximumX = beam.GetSolid().MaximumPoint.X;
+            double MaximumY = beam.GetSolid().MaximumPoint.Y;
+            double MaximumZ = beam.GetSolid().MaximumPoint.Z;
+            Tekla.Structures.Model.Polygon polygon = new Tekla.Structures.Model.Polygon();
+            polygon.Points.Add(new Point(MinimumX, MaximumY, MinimumZ));
+            polygon.Points.Add(new Point(MinimumX, MinimumY, MinimumZ));
+            polygon.Points.Add(new Point(MinimumX, MinimumY, MaximumZ));
+            polygon.Points.Add(new Point(MinimumX, MaximumY, MaximumZ));
+            Tekla.Structures.Model.Polygon polygon2 = new Tekla.Structures.Model.Polygon();
+            polygon2.Points.Add(new Point(MaximumX, MaximumY, MinimumZ));
+            polygon2.Points.Add(new Point(MaximumX, MinimumY, MinimumZ));
+            polygon2.Points.Add(new Point(MaximumX, MinimumY, MaximumZ));
+            polygon2.Points.Add(new Point(MaximumX, MaximumY, MaximumZ));
+            RebarGroup rebarGroup = new RebarGroup();
+            rebarGroup.Polygons.Add(polygon);
+            rebarGroup.Polygons.Add(polygon2);
+            rebarGroup.Class = 3;
+            rebarGroup.Name = "FootingRebar";
+            rebarGroup.Father = beam;
+            //rebarGroup.Grade = "Undefined";
+            rebarGroup.Grade = GradeTextBox.Text;
+            //rebarGroup.Size = "12";
+            rebarGroup.Size = SizeTextBox.Text;
+            //rebarGroup.RadiusValues.Add(40.0);
+            SetRadius(ref rebarGroup);
+            rebarGroup.SpacingType = BaseRebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_TARGET_SPACE;
+            rebarGroup.Spacings.Add(100.0);
+            rebarGroup.ExcludeType = RebarGroup.ExcludeTypeEnum.EXCLUDE_TYPE_BOTH;
+            rebarGroup.NumberingSeries.StartNumber = 0;
+            rebarGroup.NumberingSeries.Prefix = "Group";
+            rebarGroup.OnPlaneOffsets.Add(25.0);
+            rebarGroup.FromPlaneOffset = 40;
+            rebarGroup.Insert();
+            rebarGroup.Name = "Modified Group 1";
+            rebarGroup.Modify();
+        }
+
+        /// <summary>
+        /// Sets radiuses to rebars
+        /// </summary>
+        /// <param name="rebarGroup"></param>
+        private void SetRadius(ref RebarGroup rebarGroup)
+        {
+            string[] radiuses = BendingRadiusTextBox.Text.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var radius in radiuses)
+            {
+                rebarGroup.RadiusValues.Add(Convert.ToDouble(radius));
+            }
+        }
+
+        /// <summary>
+        /// Gets points at which models will be inserted
+        /// </summary>
+        private void GetPadFootingPoints()
+        {
+            for (int x = 0; x <= X_MAX; x += X_STEP)
+            {
+                for (int y = 0; y <= Y_MAX; y += Y_STEP)
+                {
+                    var point = new Point() { X = x, Y = y, Z = 0 };
+                    var runShortCut = _padFootingPointController.First(p => p._canApply(point));
+                    runShortCut._action(point);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Writes text to a drawing
+        /// </summary>
+        /// <param name="text"></param>
         private void CreateDrawing(string text)
         {
             if (_drawingHandler.GetConnectionStatus())
@@ -471,6 +480,12 @@ namespace Ex1
             }
         }
 
+        /// <summary>
+        /// Draws text to rectangular bounding box
+        /// </summary>
+        /// <param name="drawView"></param>
+        /// <param name="boundingBox"></param>
+        /// <param name="color"></param>
         private void DrawText(ViewBase drawView, RectangleBoundingBox boundingBox, DrawingColors color)
         {
             PointList points = new PointList();
@@ -484,17 +499,66 @@ namespace Ex1
             MyPolygon.Insert();
         }
 
-        private void lswDrawings_SelectedIndexChanged(object sender, EventArgs e)
+        /// <summary>
+        /// Adding point at the border of grid
+        /// </summary>
+        /// <param name="p"></param>
+        public static void AddPoint(Point p) => _createdModels.points.Add(p);
+
+        /// <summary>
+        /// Default method, neccassary!
+        /// </summary>
+        private static void DoNothing()
         {
-            ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
-            if (selectedList.Count != 0)
-                _drawing = (Drawing)selectedList[0].Tag;
+            //default case that just does nothing!
         }
 
-        private void btnSetActiveDrawing_Click(object sender, EventArgs e)
+        #endregion
+
+        #region DTO, support classes
+
+        /// <summary>
+        /// Controller to get border points around the grid
+        /// </summary>
+        public class PadFootingPointController
         {
-            _drawingHandler.SetActiveDrawing(_drawing, true);
+            public Func<Point, bool> _canApply { get; set; }
+            public Action<Point> _action { get; set; }
+
+            public PadFootingPointController(Func<Point, bool> canApply, Action<Point> action)
+            {
+                _canApply = canApply;
+                _action = action;
+            }
         }
+
+        /// <summary>
+        /// DTO for models inserted into Tekla
+        /// </summary>
+        private class CreatedModelEntity
+        {
+            internal List<Point> points;
+            internal List<Beam> padFootings;
+            internal List<Beam> columns;
+            internal List<Tekla.Structures.Model.Connection> connections;
+
+            private static readonly CreatedModelEntity _instance = new CreatedModelEntity();
+            /// <summary>
+            /// Returns an instance of CreatedModelEntity DTO
+            /// </summary>
+            internal static CreatedModelEntity Instance => _instance;
+            private CreatedModelEntity()
+            {
+                points = new List<Point>();
+                padFootings = new List<Beam>();
+                columns = new List<Beam>();
+                connections = new List<Tekla.Structures.Model.Connection>();
+            }
+        }
+
+        #endregion
+
+        
     }
 
     public static class Extention
