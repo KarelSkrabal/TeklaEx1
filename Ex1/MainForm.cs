@@ -11,11 +11,13 @@ using System.Text;
 using System.ComponentModel;
 using System.Linq;
 using Tekla.Structures.Drawing;
+using TSM = Tekla.Structures.Model;
 
 namespace Ex1
 {
     public partial class MainForm : ApplicationFormBase
     {
+        private Fasade _fasade;
         private Model _model;
         private ModelInfo _modelInfo;
         private string _padFootingsSize = "1500"; //default value
@@ -32,15 +34,15 @@ namespace Ex1
         private BackgroundWorker _bwCreatePadFootings;
         private BackgroundWorker _bwCreateRebars;
 
-        public PadFootingPointController[] _padFootingPointController = new PadFootingPointController[]
-        {
-            new PadFootingPointController(p => p.Y == Y_MIN, p => AddPoint(p)),
-            new PadFootingPointController(p => p.X == X_MAX, p => AddPoint(p)),
-            new PadFootingPointController(p => p.Y == Y_MAX, p => AddPoint(p)),
-            new PadFootingPointController(p => p.X == X_MIN, p => AddPoint(p)),
-            new PadFootingPointController (p => p.X > X_MIN && p.X < X_MAX && p.Y > Y_MIN && p.Y < Y_MAX, p => DoNothing()),
-            new PadFootingPointController(p => true, p => DoNothing())
-        };
+        //public PadFootingPointController[] _padFootingPointController = new PadFootingPointController[]
+        //{
+        //    new PadFootingPointController(p => p.Y == Y_MIN, p => AddPoint(p)),
+        //    new PadFootingPointController(p => p.X == X_MAX, p => AddPoint(p)),
+        //    new PadFootingPointController(p => p.Y == Y_MAX, p => AddPoint(p)),
+        //    new PadFootingPointController(p => p.X == X_MIN, p => AddPoint(p)),
+        //    new PadFootingPointController (p => p.X > X_MIN && p.X < X_MAX && p.Y > Y_MIN && p.Y < Y_MAX, p => DoNothing()),
+        //    new PadFootingPointController(p => true, p => DoNothing())
+        //};
 
         /// <summary>
         /// Constructor
@@ -49,6 +51,7 @@ namespace Ex1
         {
             base.InitializeForm();
             InitializeComponent();
+            _fasade = new Fasade(new TeklaModelController());
         }
 
         /// <summary>
@@ -56,12 +59,14 @@ namespace Ex1
         /// </summary>
         private void Initialize()
         {
+
+            
             _model = new Model();
             if (!_model.GetConnectionStatus())
                 throw new Exception("Tekla isn't connected!");
 
             //_modelInfoRawString = new StringBuilder();
-            _modelInfo = _model.GetInfo();
+            //_modelInfo = _model.GetInfo();
             _material = new MaterialItem();
             _drawingHandler = new DrawingHandler();
             _bwCreatePadFootings = new BackgroundWorker();
@@ -81,7 +86,7 @@ namespace Ex1
         private void MainForm_Load(object sender, EventArgs e)
         {
             Initialize();
-            GetPadFootingPoints();
+            //GetPadFootingPoints();
             btnCreateRebars.Enabled = false;
             ShowDrawings();
         }
@@ -89,11 +94,19 @@ namespace Ex1
         private void btnCreateFootings_Click(object sender, EventArgs e)
         {
             SetDefaultTextToResultLabel();
-            if (!_bwCreatePadFootings.IsBusy)
+            //if (!_bwCreatePadFootings.IsBusy)
+            //{
+            //    _bwCreatePadFootings.RunWorkerAsync();
+            //    btnCreateFootings.Enabled = false;
+            //}
+
+            try
             {
-                _bwCreatePadFootings.RunWorkerAsync();
-                btnCreateFootings.Enabled = false;
+                _fasade.CreateColumns();
+                btnCreateRebars.Enabled = true;
             }
+            catch (Exception) { }
+            
         }
 
         private void txtPadFootingSize_Leave(object sender, EventArgs e)
@@ -101,57 +114,83 @@ namespace Ex1
             string padFootingSize = (sender as TextBox)?.Text;
             if (!string.IsNullOrEmpty(padFootingSize))
                 _padFootingsSize = padFootingSize;
+
+            //TODO-new version
+            _fasade.PadFootingSize = (sender as TextBox)?.Text;
         }
 
         private void btnCreateRebars_Click(object sender, EventArgs e)
         {
-            SetDefaultTextToResultLabel();
-            if (!_bwCreateRebars.IsBusy)
+            //SetDefaultTextToResultLabel();
+            //if (!_bwCreateRebars.IsBusy)
+            //{
+            //    _bwCreateRebars.RunWorkerAsync();
+            //    btnCreateFootings.Enabled = false;
+            //    btnCreateRebars.Enabled = false;
+            //}
+            try
             {
-                _bwCreateRebars.RunWorkerAsync();
-                btnCreateFootings.Enabled = false;
-                btnCreateRebars.Enabled = false;
+                _fasade.CreateRebars();
             }
+            catch (Exception) { }
         }
 
         private void profileCatalog1_SelectClicked(object sender, EventArgs e)
         {
             //profileCatalog1 = new ProfileCatalog(ColumnsProfileTextBox.Text);
             profileCatalog1.SelectedProfile = ColumnsProfileTextBox.Text;
+            //_fasade.ColumnProfile = ColumnsProfileTextBox.Text;
         }
 
         private void profileCatalog1_SelectionDone(object sender, EventArgs e)
         {
             ColumnsProfileTextBox.Text = profileCatalog1.SelectedProfile;
             SetAttributeValue(this.ColumnsProfileTextBox, profileCatalog1.SelectedProfile);
+            //
+            _fasade.ColumnProfile = profileCatalog1.SelectedProfile;
         }
 
         private void reinforcementCatalog1_SelectionDone(object sender, EventArgs e)
         {
-            SizeTextBox.Text = reinforcementCatalog1.SelectedRebarSize;
-            GradeTextBox.Text = reinforcementCatalog1.SelectedRebarGrade;
-            BendingRadiusTextBox.Text = reinforcementCatalog1.SelectedRebarBendingRadius.ToString();
+            //SizeTextBox.Text = reinforcementCatalog1.SelectedRebarSize;
+            //GradeTextBox.Text = reinforcementCatalog1.SelectedRebarGrade;
+            //BendingRadiusTextBox.Text = reinforcementCatalog1.SelectedRebarBendingRadius.ToString();
+            //
+            _fasade.RebarGroupSize = SizeTextBox.Text = reinforcementCatalog1.SelectedRebarSize;
+            _fasade.RebarGroupGrade = GradeTextBox.Text = reinforcementCatalog1.SelectedRebarGrade;
+            _fasade.RebarGroupRadius = BendingRadiusTextBox.Text = reinforcementCatalog1.SelectedRebarBendingRadius.ToString();
         }
 
         private void btnSelectMaterial_Click(object sender, EventArgs e)
         {
-            var selectMaterial = new MaterialSelectionForm();
+            var selectMaterial = new MaterialSelectionForm(_fasade);
+            //selectMaterial.facade = _fasade;
             selectMaterial.ShowDialog();
             if (selectMaterial.DialogResult == DialogResult.Cancel)
             {
-                MaterialItem nullValue = new MaterialItem() { MaterialName = "Select ..." };
-                selectMaterial._materialItems.Insert(0, nullValue);
-                var bindingList = new BindingList<MaterialItem>(selectMaterial._materialItems);
+                //MaterialItem nullValue = new MaterialItem() { MaterialName = "Select ..." };
+                //selectMaterial._materialItems.Insert(0, nullValue);
+                //var bindingList = new BindingList<MaterialItem>(selectMaterial._materialItems);
+                //cbMaterialList.DataSource = new BindingSource(bindingList, null);
+
+                //
+                var bindingList = new BindingList<MaterialItem>(selectMaterial.facade.MaterialItems);
                 cbMaterialList.DataSource = new BindingSource(bindingList, null);
-                //cbMaterialList.DisplayMember = "MaterialName";
+                //cbMaterialList.DataSource = new BindingSource(selectMaterial.facade.MaterialList, null);
+                cbMaterialList.DisplayMember = "MaterialName";
             }
         }
 
         private void cbMaterialList_SelectedValueChanged(object sender, EventArgs e)
         {
+            //var selectedItem = (MaterialItem)(sender as ComboBox).SelectedItem;
+            //if (selectedItem.MaterialName != "Select ...")
+            //    _material = selectedItem;
+
+            //
             var selectedItem = (MaterialItem)(sender as ComboBox).SelectedItem;
             if (selectedItem.MaterialName != "Select ...")
-                _material = selectedItem;
+                _fasade.Material = selectedItem;
         }
 
         private void btnInsertDrawing_Click(object sender, EventArgs e)
@@ -165,11 +204,17 @@ namespace Ex1
             ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
             if (selectedList.Count != 0)
                 _drawing = (Drawing)selectedList[0].Tag;
+
+            //
+            _fasade.SelectedDrawingToActivate = (Drawing)selectedList[0].Tag;
         }
 
         private void btnSetActiveDrawing_Click(object sender, EventArgs e)
         {
             _drawingHandler.SetActiveDrawing(_drawing, true);
+
+            //
+            _fasade.SetDrawingActive();
         }
 
         private void _bwCreateRebars_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -220,25 +265,25 @@ namespace Ex1
         /// </summary>
         private void _bwCreatePadFootings_DoWork(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker backgroundWorker = (BackgroundWorker)sender;
-            double progressStep = 0;
-            int counter = 0;
+            //BackgroundWorker backgroundWorker = (BackgroundWorker)sender;
+            //double progressStep = 0;
+            //int counter = 0;
 
-            //calculate progress step for the progress reporting on the form
-            if (_createdModels.points != null && _createdModels.points.Count > 0)
-                progressStep = (double)1 / _createdModels.points.Count;
+            ////calculate progress step for the progress reporting on the form
+            //if (_createdModels.points != null && _createdModels.points.Count > 0)
+            //    progressStep = (double)1 / _createdModels.points.Count;
 
-            foreach (var point in _createdModels.points)
-            {
-                //TODO-change this, consider bool return value if it's usefull
-                if (InsertModel(point))
-                {
-                    CreateConnection(counter);
-                    counter++;
-                }
-                backgroundWorker.ReportProgress((int)Math.Round(counter * progressStep * 100, MidpointRounding.AwayFromZero));
-            }
-            //e.Result = ret;
+            //foreach (var point in _createdModels.points)
+            //{
+            //    //TODO-change this, consider bool return value if it's usefull
+            //    if (InsertModel(point))
+            //    {
+            //        CreateConnection(counter);
+            //        counter++;
+            //    }
+            //    backgroundWorker.ReportProgress((int)Math.Round(counter * progressStep * 100, MidpointRounding.AwayFromZero));
+            //}
+            ////e.Result = ret;
         }
 
         /// <summary>
@@ -254,19 +299,23 @@ namespace Ex1
         /// </summary>
         private void ShowDrawings()
         {
-            DrawingEnumerator drawingEnumerator = _drawingHandler.GetDrawings();
-            ListViewItem item;
-            while (drawingEnumerator.MoveNext())
-            {
-                item = new ListViewItem()
-                {
-                    Tag = drawingEnumerator.Current,
-                    Text = drawingEnumerator.Current.Name,
-                    ToolTipText = drawingEnumerator.Current.Title2
-                };
-                lswDrawings.Items.Add(item);
-                item = null;
-            }
+            //DrawingEnumerator drawingEnumerator = _drawingHandler.GetDrawings();
+            //ListViewItem item;
+            //while (drawingEnumerator.MoveNext())
+            //{
+            //    item = new ListViewItem()
+            //    {
+            //        Tag = drawingEnumerator.Current,
+            //        Text = drawingEnumerator.Current.Name,
+            //        ToolTipText = drawingEnumerator.Current.Title2
+            //    };
+            //    lswDrawings.Items.Add(item);
+                
+            //    item = null;
+            //}
+
+            //T0DO-new version
+            lswDrawings.Items.AddRange(_fasade.GetDrowings());
         }
 
         //TODO-refactor this method
@@ -274,7 +323,7 @@ namespace Ex1
         {
             bool ret = CreatePadFootings(point) && CreateColumnOnPadFootings(point);
             //testing
-            CreateRebar(_createdModels.padFootings.FirstOrDefault());
+            //CreateRebar(_createdModels.padFootings.FirstOrDefault());
             return ret;
         }
 
@@ -286,21 +335,21 @@ namespace Ex1
         /// <returns></returns>
         private bool CreatePadFootings(Point point)
         {
-            Beam padFooting = new Beam();
-            padFooting.Name = "FOOTING";
-            padFooting.Profile.ProfileString = _padFootingsSize.GetPadFootingSizeString();
-            padFooting.Material.MaterialString = "K30-2";
-            padFooting.Class = "8";
-            padFooting.StartPoint = point;
-            padFooting.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 500 };
-            padFooting.Position.Rotation = Position.RotationEnum.FRONT;
-            padFooting.Position.Plane = Position.PlaneEnum.MIDDLE;
-            padFooting.Position.Depth = Position.DepthEnum.MIDDLE;
-            if (padFooting.Insert() && _model.CommitChanges())
-            {
-                _createdModels.padFootings.Add(padFooting);
-                return true;
-            }
+            //Beam padFooting = new Beam();
+            //padFooting.Name = "FOOTING";
+            //padFooting.Profile.ProfileString = _padFootingsSize.GetPadFootingSizeString();
+            //padFooting.Material.MaterialString = "K30-2";
+            //padFooting.Class = "8";
+            //padFooting.StartPoint = point;
+            //padFooting.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 500 };
+            //padFooting.Position.Rotation = Position.RotationEnum.FRONT;
+            //padFooting.Position.Plane = Position.PlaneEnum.MIDDLE;
+            //padFooting.Position.Depth = Position.DepthEnum.MIDDLE;
+            //if (padFooting.Insert() && _model.CommitChanges())
+            //{
+            //    _createdModels.padFootings.Add(padFooting);
+            //    return true;
+            //}
             return false;
         }
 
@@ -312,51 +361,45 @@ namespace Ex1
         /// <returns></returns>
         private bool CreateColumnOnPadFootings(Point point)
         {
-            Beam column = new Beam();
-            column.Name = "COLUMN";
-            //column.Profile.ProfileString = "400*400";
-            column.Profile.ProfileString = ColumnsProfileTextBox.Text;
-            column.Material.MaterialString = "Concrete_Undefined";
-            column.Material.MaterialString = _material.MaterialName;
-            column.Class = "13";
-            column.StartPoint = point;
-            column.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 5000 };
-            column.Position.Rotation = Position.RotationEnum.FRONT;
-            column.Position.Plane = Position.PlaneEnum.MIDDLE;
-            column.Position.Depth = Position.DepthEnum.MIDDLE;
-            if (column.Insert() && _model.CommitChanges())
-            {
-                _createdModels.columns.Add(column);
-                return true;
-            }
+            //Beam column = new Beam();
+            //column.Name = "COLUMN";
+            ////column.Profile.ProfileString = "400*400";
+            //column.Profile.ProfileString = ColumnsProfileTextBox.Text;
+            //column.Material.MaterialString = "Concrete_Undefined";
+            //column.Material.MaterialString = _material.MaterialName;
+            //column.Class = "13";
+            //column.StartPoint = point;
+            //column.EndPoint = new Point() { X = point.X, Y = point.Y, Z = point.Z + 5000 };
+            //column.Position.Rotation = Position.RotationEnum.FRONT;
+            //column.Position.Plane = Position.PlaneEnum.MIDDLE;
+            //column.Position.Depth = Position.DepthEnum.MIDDLE;
+            //if (column.Insert() && _model.CommitChanges())
+            //{
+            //    _createdModels.columns.Add(column);
+            //    return true;
+            //}
             return false;
         }
 
         //TODO-consider inserted parameter, int || Point (as in CreatePadFooting method)
-        /// <summary>
-        /// Creates connection between column & padfooting
-        /// </summary>
-        /// <param name="actualPosition"></param>
-        /// <returns></returns>
-        private bool CreateConnection(int actualPosition)
-        {
-            Tekla.Structures.Model.Connection connection = new Tekla.Structures.Model.Connection();
-            connection.Name = "Stiffened Base Plate";
-            connection.Number = 1014;
-            connection.PositionType = PositionTypeEnum.COLLISION_PLANE;
-            connection.SetAttribute("cut1", 1);
-            connection.SetAttribute("cut2", 1);
-            connection.LoadAttributesFromFile("standard");
-            connection.UpVector = new Vector(0, 0, 1000);
-            connection.SetPrimaryObject(_createdModels.columns.ElementAt(actualPosition));
-            connection.SetSecondaryObject(_createdModels.padFootings.ElementAt(actualPosition));
-            if (connection.Insert() && _model.CommitChanges())
+            /// <summary>
+            /// Creates connection between given column & padfooting
+            /// </summary>
+            private void CreateConnection(TSM.ModelObject column, TSM.ModelObject padFooting)
             {
-                _createdModels.connections.Add(connection);
-                return true;
+                //TSM.Connection connection = new TSM.Connection();
+                //connection.Name = "Stiffened Base Plate";
+                //connection.Number = 1014;
+                //connection.PositionType = PositionTypeEnum.COLLISION_PLANE;
+                //connection.SetAttribute("cut1", 1);
+                //connection.SetAttribute("cut2", 1);
+                //connection.LoadAttributesFromFile("standard");
+                //connection.UpVector = new Vector(0, 0, 1000);
+                //connection.SetPrimaryObject(column);
+                //connection.SetSecondaryObject(padFooting);
+                //connection.Insert();
+                //_model.CommitChanges();
             }
-            return false;
-        }
 
         /// <summary>
         /// Creates rebars to a given beam
@@ -364,44 +407,44 @@ namespace Ex1
         /// <param name="beam"></param>
         private void CreateRebar(Beam beam)
         {
-            double MinimumX = beam.GetSolid().MinimumPoint.X;
-            double MinimumY = beam.GetSolid().MinimumPoint.Y;
-            double MinimumZ = beam.GetSolid().MinimumPoint.Z;
-            double MaximumX = beam.GetSolid().MaximumPoint.X;
-            double MaximumY = beam.GetSolid().MaximumPoint.Y;
-            double MaximumZ = beam.GetSolid().MaximumPoint.Z;
-            Tekla.Structures.Model.Polygon polygon = new Tekla.Structures.Model.Polygon();
-            polygon.Points.Add(new Point(MinimumX, MaximumY, MinimumZ));
-            polygon.Points.Add(new Point(MinimumX, MinimumY, MinimumZ));
-            polygon.Points.Add(new Point(MinimumX, MinimumY, MaximumZ));
-            polygon.Points.Add(new Point(MinimumX, MaximumY, MaximumZ));
-            Tekla.Structures.Model.Polygon polygon2 = new Tekla.Structures.Model.Polygon();
-            polygon2.Points.Add(new Point(MaximumX, MaximumY, MinimumZ));
-            polygon2.Points.Add(new Point(MaximumX, MinimumY, MinimumZ));
-            polygon2.Points.Add(new Point(MaximumX, MinimumY, MaximumZ));
-            polygon2.Points.Add(new Point(MaximumX, MaximumY, MaximumZ));
-            RebarGroup rebarGroup = new RebarGroup();
-            rebarGroup.Polygons.Add(polygon);
-            rebarGroup.Polygons.Add(polygon2);
-            rebarGroup.Class = 3;
-            rebarGroup.Name = "FootingRebar";
-            rebarGroup.Father = beam;
-            //rebarGroup.Grade = "Undefined";
-            rebarGroup.Grade = GradeTextBox.Text;
-            //rebarGroup.Size = "12";
-            rebarGroup.Size = SizeTextBox.Text;
-            //rebarGroup.RadiusValues.Add(40.0);
-            SetRadius(ref rebarGroup);
-            rebarGroup.SpacingType = BaseRebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_TARGET_SPACE;
-            rebarGroup.Spacings.Add(100.0);
-            rebarGroup.ExcludeType = RebarGroup.ExcludeTypeEnum.EXCLUDE_TYPE_BOTH;
-            rebarGroup.NumberingSeries.StartNumber = 0;
-            rebarGroup.NumberingSeries.Prefix = "Group";
-            rebarGroup.OnPlaneOffsets.Add(25.0);
-            rebarGroup.FromPlaneOffset = 40;
-            rebarGroup.Insert();
-            rebarGroup.Name = "Modified Group 1";
-            rebarGroup.Modify();
+            //double MinimumX = beam.GetSolid().MinimumPoint.X;
+            //double MinimumY = beam.GetSolid().MinimumPoint.Y;
+            //double MinimumZ = beam.GetSolid().MinimumPoint.Z;
+            //double MaximumX = beam.GetSolid().MaximumPoint.X;
+            //double MaximumY = beam.GetSolid().MaximumPoint.Y;
+            //double MaximumZ = beam.GetSolid().MaximumPoint.Z;
+            //Tekla.Structures.Model.Polygon polygon = new Tekla.Structures.Model.Polygon();
+            //polygon.Points.Add(new Point(MinimumX, MaximumY, MinimumZ));
+            //polygon.Points.Add(new Point(MinimumX, MinimumY, MinimumZ));
+            //polygon.Points.Add(new Point(MinimumX, MinimumY, MaximumZ));
+            //polygon.Points.Add(new Point(MinimumX, MaximumY, MaximumZ));
+            //Tekla.Structures.Model.Polygon polygon2 = new Tekla.Structures.Model.Polygon();
+            //polygon2.Points.Add(new Point(MaximumX, MaximumY, MinimumZ));
+            //polygon2.Points.Add(new Point(MaximumX, MinimumY, MinimumZ));
+            //polygon2.Points.Add(new Point(MaximumX, MinimumY, MaximumZ));
+            //polygon2.Points.Add(new Point(MaximumX, MaximumY, MaximumZ));
+            //RebarGroup rebarGroup = new RebarGroup();
+            //rebarGroup.Polygons.Add(polygon);
+            //rebarGroup.Polygons.Add(polygon2);
+            //rebarGroup.Class = 3;
+            //rebarGroup.Name = "FootingRebar";
+            //rebarGroup.Father = beam;
+            ////rebarGroup.Grade = "Undefined";
+            //rebarGroup.Grade = GradeTextBox.Text;
+            ////rebarGroup.Size = "12";
+            //rebarGroup.Size = SizeTextBox.Text;
+            ////rebarGroup.RadiusValues.Add(40.0);
+            //SetRadius(ref rebarGroup);
+            //rebarGroup.SpacingType = BaseRebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_TARGET_SPACE;
+            //rebarGroup.Spacings.Add(100.0);
+            //rebarGroup.ExcludeType = RebarGroup.ExcludeTypeEnum.EXCLUDE_TYPE_BOTH;
+            //rebarGroup.NumberingSeries.StartNumber = 0;
+            //rebarGroup.NumberingSeries.Prefix = "Group";
+            //rebarGroup.OnPlaneOffsets.Add(25.0);
+            //rebarGroup.FromPlaneOffset = 40;
+            //rebarGroup.Insert();
+            //rebarGroup.Name = "Modified Group 1";
+            //rebarGroup.Modify();
         }
 
         /// <summary>
@@ -420,18 +463,18 @@ namespace Ex1
         /// <summary>
         /// Gets points at which models will be inserted
         /// </summary>
-        private void GetPadFootingPoints()
-        {
-            for (int x = 0; x <= X_MAX; x += X_STEP)
-            {
-                for (int y = 0; y <= Y_MAX; y += Y_STEP)
-                {
-                    var point = new Point() { X = x, Y = y, Z = 0 };
-                    var runShortCut = _padFootingPointController.First(p => p._canApply(point));
-                    runShortCut._action(point);
-                }
-            }
-        }
+        //private void GetPadFootingPoints()
+        //{
+        //    for (int x = 0; x <= X_MAX; x += X_STEP)
+        //    {
+        //        for (int y = 0; y <= Y_MAX; y += Y_STEP)
+        //        {
+        //            var point = new Point() { X = x, Y = y, Z = 0 };
+        //            var runShortCut = _padFootingPointController.First(p => p._canApply(point));
+        //            runShortCut._action(point);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Writes text to a drawing
@@ -503,15 +546,15 @@ namespace Ex1
         /// Adding point at the border of grid
         /// </summary>
         /// <param name="p"></param>
-        public static void AddPoint(Point p) => _createdModels.points.Add(p);
+        //public static void AddPoint(Point p) => _createdModels.points.Add(p);
 
         /// <summary>
         /// Default method, neccassary!
         /// </summary>
-        private static void DoNothing()
-        {
-            //default case that just does nothing!
-        }
+        //private static void DoNothing()
+        //{
+        //    //default case that just does nothing!
+        //}
 
         #endregion
 

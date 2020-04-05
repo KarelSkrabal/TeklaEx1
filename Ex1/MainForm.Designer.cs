@@ -70,7 +70,7 @@
             this.structuresExtender.SetAttributeTypeName(this.btnCreateFootings, null);
             this.structuresExtender.SetBindPropertyName(this.btnCreateFootings, null);
             this.btnCreateFootings.Location = new System.Drawing.Point(596, 310);
-            this.btnCreateFootings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCreateFootings.Margin = new System.Windows.Forms.Padding(4);
             this.btnCreateFootings.Name = "btnCreateFootings";
             this.btnCreateFootings.Size = new System.Drawing.Size(184, 28);
             this.btnCreateFootings.TabIndex = 0;
@@ -175,7 +175,7 @@
             this.profileCatalog1.BackColor = System.Drawing.Color.Transparent;
             this.structuresExtender.SetBindPropertyName(this.profileCatalog1, null);
             this.profileCatalog1.Location = new System.Drawing.Point(292, 31);
-            this.profileCatalog1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.profileCatalog1.Margin = new System.Windows.Forms.Padding(5);
             this.profileCatalog1.Name = "profileCatalog1";
             this.profileCatalog1.SelectedProfile = "";
             this.profileCatalog1.Size = new System.Drawing.Size(117, 33);
@@ -279,8 +279,8 @@
             this.structuresExtender.SetAttributeTypeName(this.reinforcementCatalog1, null);
             this.reinforcementCatalog1.BackColor = System.Drawing.Color.Transparent;
             this.structuresExtender.SetBindPropertyName(this.reinforcementCatalog1, null);
-            this.reinforcementCatalog1.Location = new System.Drawing.Point(292, 22);
-            this.reinforcementCatalog1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.reinforcementCatalog1.Location = new System.Drawing.Point(292, 19);
+            this.reinforcementCatalog1.Margin = new System.Windows.Forms.Padding(5);
             this.reinforcementCatalog1.Name = "reinforcementCatalog1";
             this.reinforcementCatalog1.SelectedRebarBendingRadius = 0D;
             this.reinforcementCatalog1.SelectedRebarGrade = "";
@@ -466,7 +466,7 @@
             this.Controls.Add(this.txtPadFootingSize);
             this.Controls.Add(this.lbResult);
             this.Controls.Add(this.btnCreateFootings);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.MainForm_Load);

@@ -13,28 +13,36 @@ namespace Ex1
 {
     public partial class MaterialSelectionForm : Form
     {
-        public IList<MaterialItem> _materialItems;
-        private CatalogHandler _catalogHandler;
-        public MaterialSelectionForm()
+        //public IList<MaterialItem> _materialItems;
+        //private CatalogHandler _catalogHandler;
+        public ITeklaModelController facade;
+        public MaterialSelectionForm(ITeklaModelController controller)
         {
-            InitializeComponent();            
-            Inialize();
+            InitializeComponent();
+            facade = controller;
+            //Inialize();
         }
 
         private void Inialize()
         {
-            _catalogHandler = new CatalogHandler();
-            _materialItems = new List<MaterialItem>();
+            //_catalogHandler = new CatalogHandler();
+            //_materialItems = new List<MaterialItem>();
         }
 
+        /// <summary>
+        /// Gets the list of available materials
+        /// </summary>
         private void GetMaterialItems()
         {
-            MaterialItemEnumerator materialEnumerator = _catalogHandler.GetMaterialItems();
-            while (materialEnumerator.MoveNext())
-            {
-                if (materialEnumerator.Current.Type == MaterialItem.MaterialItemTypeEnum.MATERIAL_STEEL)
-                    _materialItems.Add(materialEnumerator.Current);
-            }
+            //MaterialItemEnumerator materialEnumerator = _catalogHandler.GetMaterialItems();
+            //while (materialEnumerator.MoveNext())
+            //{
+            //    if (materialEnumerator.Current.Type == MaterialItem.MaterialItemTypeEnum.MATERIAL_STEEL)
+            //        _materialItems.Add(materialEnumerator.Current);
+            //}
+
+            //
+            facade.GetMaterialItems();
         }
 
         private void MaterialSelectionForm_Load(object sender, EventArgs e)
@@ -45,21 +53,24 @@ namespace Ex1
 
         private void ShowMaterialList()
         {
-            var bindingList = new BindingList<Material>();
+            //var bindingList = new BindingList<Material>();
             
-            //bindingList.Add(nullValue);
-            foreach (var material in _materialItems)
-            {
-                bindingList.Add(new Material()
-                {
-                    Name = material.MaterialName,
-                    Type = material.Type.ToString(),
-                    Alias1 = material.AliasName1,
-                    Alias2 = material.AliasName2,
-                    Alias3 = material.AliasName3
-                });
-            }
-            dataGrid1.DataSource = new BindingSource(bindingList, null);
+            ////bindingList.Add(nullValue);
+            //foreach (var material in _materialItems)
+            //{
+            //    bindingList.Add(new Material()
+            //    {
+            //        Name = material.MaterialName,
+            //        Type = material.Type.ToString(),
+            //        Alias1 = material.AliasName1,
+            //        Alias2 = material.AliasName2,
+            //        Alias3 = material.AliasName3
+            //    });
+            //}
+            //dataGrid1.DataSource = new BindingSource(bindingList, null);
+
+            //
+            dataGrid1.DataSource = new BindingSource(facade.MaterialList, null);
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -68,16 +79,16 @@ namespace Ex1
         }
     }
 
-    public class Material
-    {
-        public string Name { get; set; }
-        public string Alias1 { get; set; }
-        public string Alias2 { get; set; }
-        public string  Alias3 { get; set; }
-        public string Type { get; set; }
-        public Material()
-        {
+    //public class Material
+    //{
+    //    public string Name { get; set; }
+    //    public string Alias1 { get; set; }
+    //    public string Alias2 { get; set; }
+    //    public string  Alias3 { get; set; }
+    //    public string Type { get; set; }
+    //    public Material()
+    //    {
 
-        }
-    }
+    //    }
+    //}
 }
