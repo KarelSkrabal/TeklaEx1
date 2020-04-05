@@ -87,9 +87,11 @@ namespace Ex1
         private string _rebarGroupRadius;
         public string RebarGroupRadius { get => _rebarGroupRadius; set => _rebarGroupRadius = value; }
         private Drawing _selectedDrawingToActivate;
-        public Drawing SelectedDrawingToActivate { get => _selectedDrawingToActivate; set => _selectedDrawingToActivate = value; }
+        public object SelectedDrawingToActivate {  set => _selectedDrawingToActivate = value as Drawing; }
         public object MaterialList { get => _modelEntity.materialBindingList; }
         public IList<MaterialItem> MaterialItems { get => _modelEntity.materialItems; /*set => throw new NotImplementedException(); */}
+
+        public string MaterialDisplayMember => "MaterialName";
 
 
         #region Tekla Manipulation Methods
@@ -310,16 +312,16 @@ namespace Ex1
                 while (views.MoveNext())
                 {
                     TSD.View currentView = views.Current as TSD.View;
-                    if(currentView != null)
+                    if (currentView != null)
                     {
-                        //RectangleBoundingBox rectangle = currentView.GetAxisAlignedBoundingBox();
+                        RectangleBoundingBox viewRectangle = currentView.GetAxisAlignedBoundingBox();
                         Text message = new Text
                         (
                             sheet,
                             new Point()
                             {
-                                X = 1000,
-                                Y = 1000
+                                X = viewRectangle.UpperLeft.X + (viewRectangle.UpperRight.X - viewRectangle.UpperLeft.X) / 2.0,
+                                Y = 0
                             },
                             messageText,
                             new Text.TextAttributes()

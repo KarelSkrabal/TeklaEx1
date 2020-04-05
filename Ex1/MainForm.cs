@@ -111,9 +111,9 @@ namespace Ex1
 
         private void txtPadFootingSize_Leave(object sender, EventArgs e)
         {
-            string padFootingSize = (sender as TextBox)?.Text;
-            if (!string.IsNullOrEmpty(padFootingSize))
-                _padFootingsSize = padFootingSize;
+            //string padFootingSize = (sender as TextBox)?.Text;
+            //if (!string.IsNullOrEmpty(padFootingSize))
+            //    _padFootingsSize = padFootingSize;
 
             //TODO-new version
             _fasade.PadFootingSize = (sender as TextBox)?.Text;
@@ -145,7 +145,7 @@ namespace Ex1
         private void profileCatalog1_SelectionDone(object sender, EventArgs e)
         {
             ColumnsProfileTextBox.Text = profileCatalog1.SelectedProfile;
-            SetAttributeValue(this.ColumnsProfileTextBox, profileCatalog1.SelectedProfile);
+            //SetAttributeValue(this.ColumnsProfileTextBox, profileCatalog1.SelectedProfile);
             //
             _fasade.ColumnProfile = profileCatalog1.SelectedProfile;
         }
@@ -174,10 +174,10 @@ namespace Ex1
                 //cbMaterialList.DataSource = new BindingSource(bindingList, null);
 
                 //
-                var bindingList = new BindingList<MaterialItem>(selectMaterial.facade.MaterialItems);
-                cbMaterialList.DataSource = new BindingSource(bindingList, null);
+                cbMaterialList.DisplayMember = _fasade.MaterialDisplayMember;
+                cbMaterialList.DataSource = new BindingSource(new BindingList<MaterialItem>(selectMaterial.facade.MaterialItems), null);
                 //cbMaterialList.DataSource = new BindingSource(selectMaterial.facade.MaterialList, null);
-                cbMaterialList.DisplayMember = "MaterialName";
+                
             }
         }
 
@@ -195,8 +195,8 @@ namespace Ex1
 
         private void btnInsertDrawing_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtDrawingText.Text))
-                CreateDrawing(txtDrawingText.Text);
+            //if (!string.IsNullOrEmpty(txtDrawingText.Text))
+            //    CreateDrawing(txtDrawingText.Text);
 
             //
             if (!string.IsNullOrEmpty(txtDrawingText.Text))
@@ -205,17 +205,19 @@ namespace Ex1
 
         private void lswDrawings_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
-            if (selectedList.Count != 0)
-                _drawing = (Drawing)selectedList[0].Tag;
+            //ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
+            //if (selectedList.Count != 0)
+            //    _drawing = (Drawing)selectedList[0].Tag;
 
             //
-            _fasade.SelectedDrawingToActivate = (Drawing)selectedList[0].Tag;
+            ListView.SelectedListViewItemCollection selectedList = (sender as ListView).SelectedItems;
+            if (selectedList.Count != 0)
+                _fasade.SelectedDrawingToActivate = /*(Drawing)*/selectedList[0].Tag;
         }
 
         private void btnSetActiveDrawing_Click(object sender, EventArgs e)
         {
-            _drawingHandler.SetActiveDrawing(_drawing, true);
+            //_drawingHandler.SetActiveDrawing(_drawing, true);
 
             //
             _fasade.SetDrawingActive();

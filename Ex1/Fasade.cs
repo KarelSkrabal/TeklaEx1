@@ -25,10 +25,12 @@ namespace Ex1
         public string RebarGroupGrade { get => _controller.RebarGroupGrade; set => _controller.RebarGroupGrade = value; }
         public string RebarGroupSize { get => _controller.RebarGroupSize; set => _controller.RebarGroupSize = value; }
         public string RebarGroupRadius { get => _controller.RebarGroupRadius; set => _controller.RebarGroupRadius = value; }
-        public IList<MaterialItem> MaterialItems { get => _controller.MaterialItems; /*set => throw new NotImplementedException(); */}
-        public Drawing SelectedDrawingToActivate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public IList<MaterialItem> MaterialItems { get => _controller.MaterialItems;}
+        public object SelectedDrawingToActivate { set => _controller.SelectedDrawingToActivate = value; }
 
         public object MaterialList => _controller.MaterialList;
+
+        public string MaterialDisplayMember => _controller.MaterialDisplayMember;
 
         public void CreateColumns()
         {

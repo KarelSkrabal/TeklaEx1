@@ -16,6 +16,7 @@ namespace Ex1
     public interface ITeklaModelController
     {
         int progress { get; }
+        string MaterialDisplayMember { get; }
         /// <summary>
         /// Size of padFooting
         /// </summary>
@@ -36,7 +37,7 @@ namespace Ex1
         /// <summary>
         /// Drawing object that will be set active by button click event at the main form
         /// </summary>
-        Drawing SelectedDrawingToActivate { get; set; }
+        object SelectedDrawingToActivate { set; }
         void CreateColumns();
         /// <summary>
         /// Creates rebar model
