@@ -60,7 +60,7 @@ namespace Ex1
         private void Initialize()
         {
 
-            
+
             _model = new Model();
             if (!_model.GetConnectionStatus())
                 throw new Exception("Tekla isn't connected!");
@@ -106,7 +106,7 @@ namespace Ex1
                 btnCreateRebars.Enabled = true;
             }
             catch (Exception) { }
-            
+
         }
 
         private void txtPadFootingSize_Leave(object sender, EventArgs e)
@@ -197,6 +197,10 @@ namespace Ex1
         {
             if (!string.IsNullOrEmpty(txtDrawingText.Text))
                 CreateDrawing(txtDrawingText.Text);
+
+            //
+            if (!string.IsNullOrEmpty(txtDrawingText.Text))
+                _fasade.CreateDrawing(txtDrawingText.Text);
         }
 
         private void lswDrawings_SelectedIndexChanged(object sender, EventArgs e)
@@ -310,7 +314,7 @@ namespace Ex1
             //        ToolTipText = drawingEnumerator.Current.Title2
             //    };
             //    lswDrawings.Items.Add(item);
-                
+
             //    item = null;
             //}
 
@@ -382,24 +386,24 @@ namespace Ex1
         }
 
         //TODO-consider inserted parameter, int || Point (as in CreatePadFooting method)
-            /// <summary>
-            /// Creates connection between given column & padfooting
-            /// </summary>
-            private void CreateConnection(TSM.ModelObject column, TSM.ModelObject padFooting)
-            {
-                //TSM.Connection connection = new TSM.Connection();
-                //connection.Name = "Stiffened Base Plate";
-                //connection.Number = 1014;
-                //connection.PositionType = PositionTypeEnum.COLLISION_PLANE;
-                //connection.SetAttribute("cut1", 1);
-                //connection.SetAttribute("cut2", 1);
-                //connection.LoadAttributesFromFile("standard");
-                //connection.UpVector = new Vector(0, 0, 1000);
-                //connection.SetPrimaryObject(column);
-                //connection.SetSecondaryObject(padFooting);
-                //connection.Insert();
-                //_model.CommitChanges();
-            }
+        /// <summary>
+        /// Creates connection between given column & padfooting
+        /// </summary>
+        private void CreateConnection(TSM.ModelObject column, TSM.ModelObject padFooting)
+        {
+            //TSM.Connection connection = new TSM.Connection();
+            //connection.Name = "Stiffened Base Plate";
+            //connection.Number = 1014;
+            //connection.PositionType = PositionTypeEnum.COLLISION_PLANE;
+            //connection.SetAttribute("cut1", 1);
+            //connection.SetAttribute("cut2", 1);
+            //connection.LoadAttributesFromFile("standard");
+            //connection.UpVector = new Vector(0, 0, 1000);
+            //connection.SetPrimaryObject(column);
+            //connection.SetSecondaryObject(padFooting);
+            //connection.Insert();
+            //_model.CommitChanges();
+        }
 
         /// <summary>
         /// Creates rebars to a given beam
@@ -601,7 +605,7 @@ namespace Ex1
 
         #endregion
 
-        
+
     }
 
     public static class Extention

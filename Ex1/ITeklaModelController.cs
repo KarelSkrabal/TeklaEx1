@@ -50,5 +50,10 @@ namespace Ex1
         /// </summary>
         void GetMaterialItems();
         ListViewItem[] GetDrowings();
+        /// <summary>
+        /// Methods creates a new rectangle with given text in all drawings available
+        /// </summary>
+        /// <param name="message">Text taken from form and inserted</param>
+        void CreateDrawing(string message);
     }
 }

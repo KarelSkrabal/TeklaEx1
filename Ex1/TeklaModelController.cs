@@ -13,6 +13,7 @@ using Point = Tekla.Structures.Geometry3d.Point;
 using System.ComponentModel;
 using Tekla.Structures.Drawing;
 using TSM = Tekla.Structures.Model;
+using TSD = Tekla.Structures.Drawing;
 using System.Collections;
 
 namespace Ex1
@@ -296,6 +297,42 @@ namespace Ex1
                         Alias3 = materialEnumerator.Current.AliasName3
                     });
                 }
+            }
+        }
+
+        public void CreateDrawing(string messageText)
+        {
+            if (_drawingHandler.GetConnectionStatus())
+            {
+                Drawing drawing = _drawingHandler.GetActiveDrawing();
+                ContainerView sheet = drawing.GetSheet();
+                DrawingObjectEnumerator views = sheet.GetViews();
+                while (views.MoveNext())
+                {
+                    TSD.View currentView = views.Current as TSD.View;
+                    if(currentView != null)
+                    {
+                        //RectangleBoundingBox rectangle = currentView.GetAxisAlignedBoundingBox();
+                        Text message = new Text
+                        (
+                            sheet,
+                            new Point()
+                            {
+                                X = 1000,
+                                Y = 1000
+                            },
+                            messageText,
+                            new Text.TextAttributes()
+                        );
+                        if (message.Insert())
+                        {
+                            RectangleBoundingBox rectangle = message.GetAxisAlignedBoundingBox();
+                            Rectangle box = new Rectangle(sheet, rectangle.LowerLeft, rectangle.UpperRight);
+                            box.Insert();
+                        }
+                    }
+                }
+                drawing.CommitChanges();
             }
         }
 

@@ -35,6 +35,11 @@ namespace Ex1
             _controller.CreateColumns();
         }
 
+        public void CreateDrawing(string message)
+        {
+            _controller.CreateDrawing(message);
+        }
+
         public void CreateRebars()
         {
             _controller.CreateRebars();
