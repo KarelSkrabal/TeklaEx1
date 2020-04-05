@@ -17,6 +17,9 @@ using System.Collections;
 
 namespace Ex1
 {
+    /// <summary>
+    /// Class that manipulates Tekla structure models
+    /// </summary>
     internal class TeklaModelController : ITeklaModelController
     {
         private Model _model = new Model();
