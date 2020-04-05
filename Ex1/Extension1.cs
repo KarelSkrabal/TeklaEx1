@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Ex1
 {
-    public static class Extention1
+    public static class Extention
     {
-        public static string GetPadFootingSizeString1(this string value)
+        public static string GetPadFootingSizeString(this string value)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(value);

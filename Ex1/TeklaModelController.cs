@@ -40,7 +40,7 @@ namespace Ex1
             set => _columnProfile = value ?? "some profile";
         }
         private MaterialItem _material;
-        public MaterialItem Material { get => _material; set => _material = value; }
+        public /*MaterialItem*/ object Material { get => _material; set => _material = value as MaterialItem; }
 
         private static readonly int X_MAX = 12000;
         private static readonly int X_MIN = 0;
@@ -89,7 +89,7 @@ namespace Ex1
         private Drawing _selectedDrawingToActivate;
         public object SelectedDrawingToActivate {  set => _selectedDrawingToActivate = value as Drawing; }
         public object MaterialList { get => _modelEntity.materialBindingList; }
-        public IList<MaterialItem> MaterialItems { get => _modelEntity.materialItems; /*set => throw new NotImplementedException(); */}
+        public IList<MaterialItem> MaterialItems { get => _modelEntity.materialItems; }
 
         public string MaterialDisplayMember => "MaterialName";
 

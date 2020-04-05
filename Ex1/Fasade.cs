@@ -21,7 +21,7 @@ namespace Ex1
 
         public string PadFootingSize { get => _controller.PadFootingSize; set => _controller.PadFootingSize = value; }
         public string ColumnProfile { get => _controller.ColumnProfile; set => _controller.ColumnProfile = value; }
-        public MaterialItem Material { get => _controller.Material; set => _controller.Material = value; }
+        public /*MaterialItem*/ object Material { get => _controller.Material; set => _controller.Material = value; }
         public string RebarGroupGrade { get => _controller.RebarGroupGrade; set => _controller.RebarGroupGrade = value; }
         public string RebarGroupSize { get => _controller.RebarGroupSize; set => _controller.RebarGroupSize = value; }
         public string RebarGroupRadius { get => _controller.RebarGroupRadius; set => _controller.RebarGroupRadius = value; }
