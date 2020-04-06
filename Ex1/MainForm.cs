@@ -124,7 +124,7 @@ namespace Ex1
                 if (!string.IsNullOrEmpty(txtDrawingText.Text))
                     _fasade.CreateDrawing(txtDrawingText.Text);
             }
-            catch (Exception) { }
+            catch (Exception ex) { }
         }
 
         private void lswDrawings_SelectedIndexChanged(object sender, EventArgs e)

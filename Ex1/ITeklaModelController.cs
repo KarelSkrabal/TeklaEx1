@@ -21,7 +21,7 @@ namespace Ex1
         /// Size of padFooting
         /// </summary>
         string PadFootingSize { get; set; }
-        /*MaterialItem*/ object Material { get; set; }
+        object Material { get; set; }
         string ColumnProfile { get; set; }
         string RebarGroupGrade { get; set; }
         string RebarGroupSize { get; set; }

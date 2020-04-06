@@ -40,7 +40,7 @@ namespace Ex1
             set => _columnProfile = value ?? "some profile";
         }
         private MaterialItem _material;
-        public /*MaterialItem*/ object Material { get => _material; set => _material = value as MaterialItem; }
+        public object Material { get => _material; set => _material = value as MaterialItem; }
 
         private static readonly int X_MAX = 12000;
         private static readonly int X_MIN = 0;
@@ -306,10 +306,12 @@ namespace Ex1
         {
             if (_drawingHandler.GetConnectionStatus())
             {
-                Drawing drawing = _drawingHandler.GetActiveDrawing();
-                ContainerView sheet = drawing.GetSheet();
-                DrawingObjectEnumerator views = sheet.GetViews();
-                while (views.MoveNext())
+                Drawing drawing = _drawingHandler?.GetActiveDrawing();
+                if (drawing is null)
+                    MessageBox.Show("There's no drawing available,nothing will be inserted!", "Exit", MessageBoxButtons.OK);
+                ContainerView sheet = drawing?.GetSheet();
+                DrawingObjectEnumerator views = sheet?.GetViews();
+                while (/*views != null &&*/ views.MoveNext())
                 {
                     TSD.View currentView = views.Current as TSD.View;
                     if (currentView != null)
@@ -320,7 +322,7 @@ namespace Ex1
                             sheet,
                             new Point()
                             {
-                                X = viewRectangle.UpperLeft.X + (viewRectangle.UpperRight.X - viewRectangle.UpperLeft.X) / 2.0,
+                                X = viewRectangle.UpperLeft.X + (viewRectangle.Width / 2),
                                 Y = 0
                             },
                             messageText,
@@ -334,7 +336,7 @@ namespace Ex1
                         }
                     }
                 }
-                drawing.CommitChanges();
+                drawing?.CommitChanges();
             }
         }
 
