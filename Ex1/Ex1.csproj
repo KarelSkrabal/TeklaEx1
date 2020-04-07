@@ -89,7 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extension1.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="Fasade.cs" />
     <Compile Include="ITeklaModelController.cs" />
     <Compile Include="MainForm.cs">

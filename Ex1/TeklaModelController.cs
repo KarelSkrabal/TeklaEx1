@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Tekla.Structures;
 using Tekla.Structures.Catalogs;
-using Tekla.Structures.Dialog;
-using Tekla.Structures.Model;
-using Tekla.Structures.Geometry3d;
-using Point = Tekla.Structures.Geometry3d.Point;
-using System.ComponentModel;
 using Tekla.Structures.Drawing;
-using TSM = Tekla.Structures.Model;
+using Tekla.Structures.Geometry3d;
+using Tekla.Structures.Model;
+using Point = Tekla.Structures.Geometry3d.Point;
 using TSD = Tekla.Structures.Drawing;
-using System.Collections;
+using TSM = Tekla.Structures.Model;
 
 namespace Ex1
 {
     /// <summary>
     /// Class that manipulates Tekla structure models
     /// </summary>
-    internal class TeklaModelController : ITeklaModelController
+    public class TeklaModelController : ITeklaModelController
     {
         private Model _model = new Model();
         private static ModelEntity _modelEntity = ModelEntity.Instance;
@@ -79,7 +75,6 @@ namespace Ex1
             GetPadFootingPoints();
         }
 
-        public int progress => throw new NotImplementedException();
         private string _rebarGroupGrade;
         public string RebarGroupGrade { get => _rebarGroupGrade; set => _rebarGroupGrade = value; }
         private string _rebarGroupSize;
@@ -87,12 +82,11 @@ namespace Ex1
         private string _rebarGroupRadius;
         public string RebarGroupRadius { get => _rebarGroupRadius; set => _rebarGroupRadius = value; }
         private Drawing _selectedDrawingToActivate;
-        public object SelectedDrawingToActivate {  set => _selectedDrawingToActivate = value as Drawing; }
+        public object SelectedDrawingToActivate { set => _selectedDrawingToActivate = value as Drawing; }
         public object MaterialList { get => _modelEntity.materialBindingList; }
         public IList<MaterialItem> MaterialItems { get => _modelEntity.materialItems; }
 
         public string MaterialDisplayMember => "MaterialName";
-
 
         #region Tekla Manipulation Methods
 
@@ -105,7 +99,6 @@ namespace Ex1
             Beam padFooting = new Beam();
             padFooting.Name = "FOOTING";
             padFooting.Profile.ProfileString = _padFootingsSize;
-            //padFooting.Profile.ProfileString = "1500*1500";
             padFooting.Material.MaterialString = "K30-2";
             padFooting.Class = "8";
             padFooting.StartPoint = point;
@@ -191,11 +184,8 @@ namespace Ex1
             rebarGroup.Class = 3;
             rebarGroup.Name = "FootingRebar";
             rebarGroup.Father = beam;
-            //rebarGroup.Grade = "Undefined";
             rebarGroup.Grade = _rebarGroupGrade;
-            //rebarGroup.Size = "12";
             rebarGroup.Size = _rebarGroupSize;
-            //rebarGroup.RadiusValues.Add(40.0);
             rebarGroup.RadiusValues = _rebarGroupRadius.GetRebarGroupRadiuses();
             rebarGroup.SpacingType = BaseRebarGroup.RebarGroupSpacingTypeEnum.SPACING_TYPE_TARGET_SPACE;
             rebarGroup.Spacings.Add(100.0);
@@ -229,15 +219,11 @@ namespace Ex1
 
         public void CreateColumns()
         {
-            try
+            foreach (var point in _modelEntity.points)
             {
-                foreach (var point in _modelEntity.points)
-                {
-                    if (CreatePadFootings(point) && CreateColumnOnPadFootings(point))
-                        CreateConnection(_modelEntity.columns.Last(), _modelEntity.padFootings.Last());
-                }
+                if (CreatePadFootings(point) && CreateColumnOnPadFootings(point))
+                    CreateConnection(_modelEntity.columns.Last(), _modelEntity.padFootings.Last());
             }
-            catch (Exception) { }
         }
 
         /// <summary>
@@ -273,10 +259,7 @@ namespace Ex1
             }
         }
 
-        public void SetDrawingActive()
-        {
-            _drawingHandler.SetActiveDrawing(_selectedDrawingToActivate, true);
-        }
+        public void SetDrawingActive() => _drawingHandler.SetActiveDrawing(_selectedDrawingToActivate, true);
 
         /// <summary>
         /// Generates MateriaItem IList used for binding to the comboBox on the main form and
@@ -311,7 +294,7 @@ namespace Ex1
                     MessageBox.Show("There's no drawing available,nothing will be inserted!", "Exit", MessageBoxButtons.OK);
                 ContainerView sheet = drawing?.GetSheet();
                 DrawingObjectEnumerator views = sheet?.GetViews();
-                while (/*views != null &&*/ views.MoveNext())
+                while (views.MoveNext())
                 {
                     TSD.View currentView = views.Current as TSD.View;
                     if (currentView != null)
@@ -350,8 +333,6 @@ namespace Ex1
             internal List<Beam> columns = new List<Beam>();
             internal IList<MaterialItem> materialItems = new List<MaterialItem>();
             internal BindingList<Material> materialBindingList = new BindingList<Material>();
-            //internal List<Tekla.Structures.Model.Connection> connections;
-
             private static readonly ModelEntity _instance = new ModelEntity();
             /// <summary>
             /// Returns an instance of CreatedModelEntity DTO
