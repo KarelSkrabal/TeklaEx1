@@ -30,7 +30,6 @@
         {
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("");
             this.btnCreateFootings = new System.Windows.Forms.Button();
-            this.lbResult = new System.Windows.Forms.Label();
             this.txtPadFootingSize = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.btnCreateRebars = new System.Windows.Forms.Button();
@@ -77,17 +76,6 @@
             this.btnCreateFootings.Text = "Create Pad Footings";
             this.btnCreateFootings.UseVisualStyleBackColor = true;
             this.btnCreateFootings.Click += new System.EventHandler(this.btnCreateFootings_Click);
-            // 
-            // lbResult
-            // 
-            this.structuresExtender.SetAttributeName(this.lbResult, null);
-            this.structuresExtender.SetAttributeTypeName(this.lbResult, null);
-            this.lbResult.AutoSize = true;
-            this.structuresExtender.SetBindPropertyName(this.lbResult, null);
-            this.lbResult.Location = new System.Drawing.Point(12, 351);
-            this.lbResult.Name = "lbResult";
-            this.lbResult.Size = new System.Drawing.Size(0, 17);
-            this.lbResult.TabIndex = 3;
             // 
             // txtPadFootingSize
             // 
@@ -464,7 +452,6 @@
             this.Controls.Add(this.btnCreateRebars);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtPadFootingSize);
-            this.Controls.Add(this.lbResult);
             this.Controls.Add(this.btnCreateFootings);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
@@ -487,7 +474,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnCreateFootings;
-        private System.Windows.Forms.Label lbResult;
         private System.Windows.Forms.TextBox txtPadFootingSize;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnCreateRebars;
