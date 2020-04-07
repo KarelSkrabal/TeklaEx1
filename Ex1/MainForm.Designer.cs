@@ -1,6 +1,6 @@
 ﻿namespace Ex1
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem("");
             this.btnCreateFootings = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lbModelInfo = new System.Windows.Forms.Label();
             this.lbResult = new System.Windows.Forms.Label();
             this.txtPadFootingSize = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -56,8 +55,8 @@
             this.txtDrawingText = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.lswDrawings = new System.Windows.Forms.ListView();
             this.btnSetActiveDrawing = new System.Windows.Forms.Button();
+            this.lswDrawings = new System.Windows.Forms.ListView();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -70,8 +69,8 @@
             this.structuresExtender.SetAttributeName(this.btnCreateFootings, null);
             this.structuresExtender.SetAttributeTypeName(this.btnCreateFootings, null);
             this.structuresExtender.SetBindPropertyName(this.btnCreateFootings, null);
-            this.btnCreateFootings.Location = new System.Drawing.Point(871, 260);
-            this.btnCreateFootings.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnCreateFootings.Location = new System.Drawing.Point(596, 310);
+            this.btnCreateFootings.Margin = new System.Windows.Forms.Padding(4);
             this.btnCreateFootings.Name = "btnCreateFootings";
             this.btnCreateFootings.Size = new System.Drawing.Size(184, 28);
             this.btnCreateFootings.TabIndex = 0;
@@ -79,40 +78,13 @@
             this.btnCreateFootings.UseVisualStyleBackColor = true;
             this.btnCreateFootings.Click += new System.EventHandler(this.btnCreateFootings_Click);
             // 
-            // label1
-            // 
-            this.structuresExtender.SetAttributeName(this.label1, null);
-            this.structuresExtender.SetAttributeTypeName(this.label1, null);
-            this.label1.AutoSize = true;
-            this.structuresExtender.SetBindPropertyName(this.label1, null);
-            this.label1.Location = new System.Drawing.Point(21, 117);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(100, 17);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Active Model : ";
-            // 
-            // lbModelInfo
-            // 
-            this.structuresExtender.SetAttributeName(this.lbModelInfo, null);
-            this.structuresExtender.SetAttributeTypeName(this.lbModelInfo, null);
-            this.lbModelInfo.AutoSize = true;
-            this.structuresExtender.SetBindPropertyName(this.lbModelInfo, null);
-            this.lbModelInfo.Location = new System.Drawing.Point(135, 117);
-            this.lbModelInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lbModelInfo.MaximumSize = new System.Drawing.Size(667, 615);
-            this.lbModelInfo.MinimumSize = new System.Drawing.Size(27, 25);
-            this.lbModelInfo.Name = "lbModelInfo";
-            this.lbModelInfo.Size = new System.Drawing.Size(27, 25);
-            this.lbModelInfo.TabIndex = 2;
-            // 
             // lbResult
             // 
             this.structuresExtender.SetAttributeName(this.lbResult, null);
             this.structuresExtender.SetAttributeTypeName(this.lbResult, null);
             this.lbResult.AutoSize = true;
             this.structuresExtender.SetBindPropertyName(this.lbResult, null);
-            this.lbResult.Location = new System.Drawing.Point(17, 306);
+            this.lbResult.Location = new System.Drawing.Point(12, 351);
             this.lbResult.Name = "lbResult";
             this.lbResult.Size = new System.Drawing.Size(0, 17);
             this.lbResult.TabIndex = 3;
@@ -122,7 +94,7 @@
             this.structuresExtender.SetAttributeName(this.txtPadFootingSize, "FootinSize");
             this.structuresExtender.SetAttributeTypeName(this.txtPadFootingSize, "String");
             this.structuresExtender.SetBindPropertyName(this.txtPadFootingSize, "AccessibleName");
-            this.txtPadFootingSize.Location = new System.Drawing.Point(973, 228);
+            this.txtPadFootingSize.Location = new System.Drawing.Point(697, 278);
             this.txtPadFootingSize.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtPadFootingSize.Name = "txtPadFootingSize";
             this.txtPadFootingSize.Size = new System.Drawing.Size(81, 22);
@@ -136,7 +108,7 @@
             this.structuresExtender.SetAttributeTypeName(this.label2, null);
             this.label2.AutoSize = true;
             this.structuresExtender.SetBindPropertyName(this.label2, null);
-            this.label2.Location = new System.Drawing.Point(869, 231);
+            this.label2.Location = new System.Drawing.Point(593, 281);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(98, 17);
             this.label2.TabIndex = 5;
@@ -147,7 +119,7 @@
             this.structuresExtender.SetAttributeName(this.btnCreateRebars, null);
             this.structuresExtender.SetAttributeTypeName(this.btnCreateRebars, null);
             this.structuresExtender.SetBindPropertyName(this.btnCreateRebars, null);
-            this.btnCreateRebars.Location = new System.Drawing.Point(871, 295);
+            this.btnCreateRebars.Location = new System.Drawing.Point(596, 345);
             this.btnCreateRebars.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnCreateRebars.Name = "btnCreateRebars";
             this.btnCreateRebars.Size = new System.Drawing.Size(184, 28);
@@ -164,7 +136,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.ColumnsProfileTextBox);
             this.groupBox1.Controls.Add(this.profileCatalog1);
-            this.groupBox1.Location = new System.Drawing.Point(632, 20);
+            this.groupBox1.Location = new System.Drawing.Point(357, 9);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -203,7 +175,7 @@
             this.profileCatalog1.BackColor = System.Drawing.Color.Transparent;
             this.structuresExtender.SetBindPropertyName(this.profileCatalog1, null);
             this.profileCatalog1.Location = new System.Drawing.Point(292, 31);
-            this.profileCatalog1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.profileCatalog1.Margin = new System.Windows.Forms.Padding(5);
             this.profileCatalog1.Name = "profileCatalog1";
             this.profileCatalog1.SelectedProfile = "";
             this.profileCatalog1.Size = new System.Drawing.Size(117, 33);
@@ -223,7 +195,7 @@
             this.groupBox2.Controls.Add(this.label5);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.reinforcementCatalog1);
-            this.groupBox2.Location = new System.Drawing.Point(632, 103);
+            this.groupBox2.Location = new System.Drawing.Point(357, 91);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -307,8 +279,8 @@
             this.structuresExtender.SetAttributeTypeName(this.reinforcementCatalog1, null);
             this.reinforcementCatalog1.BackColor = System.Drawing.Color.Transparent;
             this.structuresExtender.SetBindPropertyName(this.reinforcementCatalog1, null);
-            this.reinforcementCatalog1.Location = new System.Drawing.Point(292, 22);
-            this.reinforcementCatalog1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.reinforcementCatalog1.Location = new System.Drawing.Point(292, 19);
+            this.reinforcementCatalog1.Margin = new System.Windows.Forms.Padding(5);
             this.reinforcementCatalog1.Name = "reinforcementCatalog1";
             this.reinforcementCatalog1.SelectedRebarBendingRadius = 0D;
             this.reinforcementCatalog1.SelectedRebarGrade = "";
@@ -325,14 +297,14 @@
             this.groupBox3.Controls.Add(this.cbMaterialList);
             this.groupBox3.Controls.Add(this.btnSelectMaterial);
             this.groupBox3.Controls.Add(this.label7);
-            this.groupBox3.Location = new System.Drawing.Point(431, 228);
+            this.groupBox3.Location = new System.Drawing.Point(15, 274);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox3.Size = new System.Drawing.Size(433, 60);
+            this.groupBox3.Size = new System.Drawing.Size(561, 60);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "groupBox3";
+            this.groupBox3.Text = "Materials";
             // 
             // cbMaterialList
             // 
@@ -345,7 +317,7 @@
             this.cbMaterialList.Location = new System.Drawing.Point(73, 18);
             this.cbMaterialList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.cbMaterialList.Name = "cbMaterialList";
-            this.cbMaterialList.Size = new System.Drawing.Size(159, 24);
+            this.cbMaterialList.Size = new System.Drawing.Size(292, 24);
             this.cbMaterialList.TabIndex = 3;
             this.cbMaterialList.SelectedValueChanged += new System.EventHandler(this.cbMaterialList_SelectedValueChanged);
             // 
@@ -354,7 +326,7 @@
             this.structuresExtender.SetAttributeName(this.btnSelectMaterial, null);
             this.structuresExtender.SetAttributeTypeName(this.btnSelectMaterial, null);
             this.structuresExtender.SetBindPropertyName(this.btnSelectMaterial, null);
-            this.btnSelectMaterial.Location = new System.Drawing.Point(237, 17);
+            this.btnSelectMaterial.Location = new System.Drawing.Point(371, 17);
             this.btnSelectMaterial.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnSelectMaterial.Name = "btnSelectMaterial";
             this.btnSelectMaterial.Size = new System.Drawing.Size(184, 28);
@@ -383,11 +355,11 @@
             this.groupBox4.Controls.Add(this.btnInsertDrawing);
             this.groupBox4.Controls.Add(this.txtDrawingText);
             this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Location = new System.Drawing.Point(80, 22);
+            this.groupBox4.Location = new System.Drawing.Point(15, 215);
             this.groupBox4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.groupBox4.Size = new System.Drawing.Size(547, 55);
+            this.groupBox4.Size = new System.Drawing.Size(764, 55);
             this.groupBox4.TabIndex = 10;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Drawings";
@@ -397,7 +369,7 @@
             this.structuresExtender.SetAttributeName(this.btnInsertDrawing, null);
             this.structuresExtender.SetAttributeTypeName(this.btnInsertDrawing, null);
             this.structuresExtender.SetBindPropertyName(this.btnInsertDrawing, null);
-            this.btnInsertDrawing.Location = new System.Drawing.Point(349, 20);
+            this.btnInsertDrawing.Location = new System.Drawing.Point(567, 18);
             this.btnInsertDrawing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnInsertDrawing.Name = "btnInsertDrawing";
             this.btnInsertDrawing.Size = new System.Drawing.Size(184, 28);
@@ -414,7 +386,7 @@
             this.txtDrawingText.Location = new System.Drawing.Point(85, 20);
             this.txtDrawingText.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtDrawingText.Name = "txtDrawingText";
-            this.txtDrawingText.Size = new System.Drawing.Size(257, 22);
+            this.txtDrawingText.Size = new System.Drawing.Size(476, 22);
             this.txtDrawingText.TabIndex = 1;
             // 
             // label8
@@ -436,32 +408,22 @@
             this.structuresExtender.SetBindPropertyName(this.groupBox5, null);
             this.groupBox5.Controls.Add(this.btnSetActiveDrawing);
             this.groupBox5.Controls.Add(this.lswDrawings);
-            this.groupBox5.Location = new System.Drawing.Point(207, 82);
+            this.groupBox5.Location = new System.Drawing.Point(15, 14);
+            this.groupBox5.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(394, 140);
+            this.groupBox5.Padding = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.groupBox5.Size = new System.Drawing.Size(336, 197);
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "groupBox5";
-            // 
-            // lswDrawings
-            // 
-            this.structuresExtender.SetAttributeName(this.lswDrawings, null);
-            this.structuresExtender.SetAttributeTypeName(this.lswDrawings, null);
-            this.structuresExtender.SetBindPropertyName(this.lswDrawings, null);
-            this.lswDrawings.HideSelection = false;
-            this.lswDrawings.Location = new System.Drawing.Point(17, 21);
-            this.lswDrawings.Name = "lswDrawings";
-            this.lswDrawings.Size = new System.Drawing.Size(177, 111);
-            this.lswDrawings.TabIndex = 0;
-            this.lswDrawings.UseCompatibleStateImageBehavior = false;
-            this.lswDrawings.SelectedIndexChanged += new System.EventHandler(this.lswDrawings_SelectedIndexChanged);
+            this.groupBox5.Text = "Drawings";
             // 
             // btnSetActiveDrawing
             // 
             this.structuresExtender.SetAttributeName(this.btnSetActiveDrawing, null);
             this.structuresExtender.SetAttributeTypeName(this.btnSetActiveDrawing, null);
             this.structuresExtender.SetBindPropertyName(this.btnSetActiveDrawing, null);
-            this.btnSetActiveDrawing.Location = new System.Drawing.Point(200, 102);
+            this.btnSetActiveDrawing.Location = new System.Drawing.Point(141, 159);
+            this.btnSetActiveDrawing.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnSetActiveDrawing.Name = "btnSetActiveDrawing";
             this.btnSetActiveDrawing.Size = new System.Drawing.Size(184, 28);
             this.btnSetActiveDrawing.TabIndex = 1;
@@ -469,14 +431,31 @@
             this.btnSetActiveDrawing.UseVisualStyleBackColor = true;
             this.btnSetActiveDrawing.Click += new System.EventHandler(this.btnSetActiveDrawing_Click);
             // 
-            // Form1
+            // lswDrawings
+            // 
+            this.structuresExtender.SetAttributeName(this.lswDrawings, null);
+            this.structuresExtender.SetAttributeTypeName(this.lswDrawings, null);
+            this.structuresExtender.SetBindPropertyName(this.lswDrawings, null);
+            this.lswDrawings.HideSelection = false;
+            this.lswDrawings.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
+            listViewItem1});
+            this.lswDrawings.Location = new System.Drawing.Point(17, 21);
+            this.lswDrawings.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.lswDrawings.Name = "lswDrawings";
+            this.lswDrawings.Size = new System.Drawing.Size(308, 132);
+            this.lswDrawings.TabIndex = 0;
+            this.lswDrawings.UseCompatibleStateImageBehavior = false;
+            this.lswDrawings.View = System.Windows.Forms.View.List;
+            this.lswDrawings.SelectedIndexChanged += new System.EventHandler(this.lswDrawings_SelectedIndexChanged);
+            // 
+            // MainForm
             // 
             this.structuresExtender.SetAttributeName(this, null);
             this.structuresExtender.SetAttributeTypeName(this, null);
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.structuresExtender.SetBindPropertyName(this, null);
-            this.ClientSize = new System.Drawing.Size(1067, 335);
+            this.ClientSize = new System.Drawing.Size(791, 383);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
@@ -486,13 +465,11 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtPadFootingSize);
             this.Controls.Add(this.lbResult);
-            this.Controls.Add(this.lbModelInfo);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnCreateFootings);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.Name = "Form1";
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "MainForm";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -510,8 +487,6 @@
         #endregion
 
         private System.Windows.Forms.Button btnCreateFootings;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label lbModelInfo;
         private System.Windows.Forms.Label lbResult;
         private System.Windows.Forms.TextBox txtPadFootingSize;
         private System.Windows.Forms.Label label2;

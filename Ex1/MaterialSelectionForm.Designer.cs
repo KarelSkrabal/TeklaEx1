@@ -41,28 +41,33 @@
             this.dataGrid1.BackgroundColor = System.Drawing.Color.White;
             this.dataGrid1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGrid1.Enabled = false;
-            this.dataGrid1.Location = new System.Drawing.Point(6, 31);
+            this.dataGrid1.Location = new System.Drawing.Point(4, 25);
+            this.dataGrid1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dataGrid1.Name = "dataGrid1";
             this.dataGrid1.RowTemplate.Height = 24;
-            this.dataGrid1.Size = new System.Drawing.Size(733, 177);
+            this.dataGrid1.Size = new System.Drawing.Size(550, 161);
             this.dataGrid1.TabIndex = 0;
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(690, 242);
+            this.btnClose.Location = new System.Drawing.Point(416, 190);
+            this.btnClose.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.Size = new System.Drawing.Size(138, 23);
             this.btnClose.TabIndex = 1;
-            this.btnClose.Text = "Load";
+            this.btnClose.Text = "Load Materials";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.dataGrid1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Controls.Add(this.btnClose);
+            this.groupBox1.Location = new System.Drawing.Point(9, 10);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(753, 224);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(565, 217);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "List of available Materials";
@@ -70,12 +75,12 @@
             // MaterialSelectionForm
             // 
             this.AcceptButton = this.btnClose;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(777, 271);
+            this.ClientSize = new System.Drawing.Size(583, 238);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.btnClose);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "MaterialSelectionForm";
             this.Text = "MaterialSelectionForm";
             this.Load += new System.EventHandler(this.MaterialSelectionForm_Load);
