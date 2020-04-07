@@ -16,3 +16,4 @@ C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.csproj.CopyComplete
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.exe
 C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.pdb
+C:\Users\k.skrabal\Documents\Visual Studio 2017\Projects\Ex1\ObjDir\2019\Ex1\Ex1.csprojAssemblyReference.cache
